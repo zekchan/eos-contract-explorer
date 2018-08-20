@@ -60,7 +60,7 @@ class App extends React.Component<WithStyles<typeof styles>, IState> {
           </Card>
         </Grid>
         <Grid item={true} xs={12}>
-          {submitted && <ContractInfo contractName={contractName} />}
+          {submitted && <ContractInfo contractName={contractName} scopeName={this.state.scopeName}/>}
         </Grid>
       </Grid>
     )

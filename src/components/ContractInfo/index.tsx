@@ -13,6 +13,7 @@ import ContractTable from "../Table";
 
 interface IProps {
     contractName: string,
+    scopeName: string,
 }
 interface IState {
     loading: boolean,
@@ -52,7 +53,8 @@ export default class ContractInfo extends React.Component<IProps, IState> {
         if (this.state.error) {
             return <div style={{ color: "red" }}>Ошибка: {this.state.error}</div>
         }
-        const { ricardian_clauses, tables, actions } = this.state.abi as abi_def
+        const { ricardian_clauses, tables, actions, structs } = this.state.abi as abi_def
+        const structsMap = structs.reduce((acc, struct) => Object.assign(acc, { [struct.name]: struct }), {})
         return <Card>
             <CardContent>
                 <Typography variant="headline">
@@ -61,12 +63,14 @@ export default class ContractInfo extends React.Component<IProps, IState> {
                 <Typography variant='subheading'>Tables:</Typography>
                 <ul>
                     {tables && tables.map(
-                        table => <li key={table.name}>
+                        table =>
                             <ContractTable
+                                scopeName={this.props.scopeName}
+                                key={table.name}
                                 contractName={this.props.contractName}
                                 table={table}
+                                structs={structsMap}
                             />
-                        </li>
                     )}
                 </ul>
                 <Typography variant='subheading'>Ricardian Clauses</Typography>

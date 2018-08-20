@@ -16,7 +16,14 @@ declare module 'eosjs-api' {
         actions: {
             name: string,
             ricardian_contract: string,
-        }[]
+        }[],
+        structs: {
+            name: string,
+            fields: {
+                name: string,
+                type: string,
+            }[]
+        }[],
     }
     type getAbiResult = {
         account_name: string,
