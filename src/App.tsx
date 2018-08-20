@@ -1,29 +1,84 @@
 import * as React from 'react';
+
+import Button from '@material-ui/core/Button';
+import Grid from '@material-ui/core/Grid';
+import { createStyles, Theme, withStyles, WithStyles } from '@material-ui/core/styles';
+import TextField from '@material-ui/core/TextField';
 import ContractInfo from './components/ContractInfo';
-import ContractInput from './components/ContractInput';
+
 interface IState {
-  contractName: string | null,
+  contractName: string,
+  submitted: boolean,
+  scopeName: string,
 }
-class App extends React.Component<{}, IState> {
+const styles = (theme: Theme) => createStyles({
+  textField: {
+    marginLeft: theme.spacing.unit,
+    marginRight: theme.spacing.unit,
+    width: 200,
+  },
+})
+class App extends React.Component<WithStyles<typeof styles>, IState> {
   public state: IState = {
-    contractName: null,
+    contractName: '',
+    scopeName: '',
+    submitted: false,
   }
   public render() {
-    const { contractName } = this.state
+    const { contractName, submitted, scopeName } = this.state
+    const { classes: { textField } } = this.props
     return (
-      <React.Fragment>
-        <ContractInput onChange={this.handleContractNameChange}/>
-
-        {contractName && <ContractInfo contractName={contractName} key={contractName}/>}
-      </React.Fragment>
+      <Grid container={true} direction='column' justify='center'>
+        <Grid item={true} xs={12}>
+          <form onSubmit={this.handleFormSubmit} autoComplete='off' noValidate={true}>
+            <TextField
+              label="Контракт"
+              autoFocus={true}
+              className={textField}
+              placeholder="wizardstoken"
+              value={contractName}
+              onChange={this.handleContractNameChange}
+              margin="normal"
+            />
+            <TextField
+              label="Аккаунт"
+              placeholder="saynananapls"
+              className={textField}
+              value={scopeName}
+              onChange={this.handleScopeNameChange}
+              margin="normal"
+            />
+            <Button variant="contained" color="primary" type='submit'>
+              GO
+            </Button>
+          </form>
+        </Grid>
+        <Grid item={true} xs={12}>
+          {submitted && <ContractInfo contractName={contractName} />}
+        </Grid>
+      </Grid>
     )
   }
-
-  private handleContractNameChange = (contractName: string): void => {
+  private handleFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
     this.setState({
-      contractName,
+      submitted: true,
+    })
+
+  }
+  private handleContractNameChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    this.setState({
+      contractName: e.target.value,
+      submitted: false,
+    })
+  }
+  private handleScopeNameChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    this.setState({
+      scopeName: e.target.value,
+      submitted: false,
     })
   }
 }
 
-export default App;
+export default withStyles(styles)(App)
