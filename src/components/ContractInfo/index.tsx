@@ -1,14 +1,11 @@
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Typography from '@material-ui/core/Typography';
 import { abi_def, getAbiResult } from "eosjs-api";
 import * as React from "react"
-import * as ReactMarkdown from "react-markdown"
 import eos from "../../eosService"
+import RicardianText from '../RicardianText';
 import ContractTable from "../Table";
 
 interface IProps {
@@ -75,33 +72,19 @@ export default class ContractInfo extends React.Component<IProps, IState> {
                 </ul>
                 <Typography variant='subheading'>Ricardian Clauses</Typography>
                 {
-                    ricardian_clauses.map(({ id, body }) =>
-                        <ExpansionPanel key={id}>
-                            <ExpansionPanelSummary>
-                                <Typography>{id}</Typography>
-                            </ExpansionPanelSummary>
-                            <ExpansionPanelDetails>
-                                <Typography>
-                                    <ReactMarkdown source={body} />
-                                </Typography>
-                            </ExpansionPanelDetails>
-                        </ExpansionPanel>
-                    )
+                    ricardian_clauses
+                        .sort(({ body }) => body.length ? -1 : 1)
+                        .map(({ id, body }) =>
+                            <RicardianText name={id} body={body} key={id} />
+                        )
                 }
                 <Typography variant='subheading'>Actions</Typography>
                 {
-                    actions.map(({ name, ricardian_contract }) =>
-                        <ExpansionPanel key={name}>
-                            <ExpansionPanelSummary>
-                                <Typography>{name}</Typography>
-                            </ExpansionPanelSummary>
-                            <ExpansionPanelDetails>
-                                <Typography>
-                                    <ReactMarkdown source={ricardian_contract} />
-                                </Typography>
-                            </ExpansionPanelDetails>
-                        </ExpansionPanel>
-                    )
+                    actions
+                        .sort(({ ricardian_contract }) => ricardian_contract.length ? -1 : 1)
+                        .map(({ name, ricardian_contract }) =>
+                            <RicardianText name={name} body={ricardian_contract} key={name}/>
+                        )
                 }
             </CardContent>
         </Card>
