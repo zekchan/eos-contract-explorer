@@ -25,9 +25,11 @@ export default class RicardianText extends React.Component<{ name: string, body:
                 }
             </ExpansionPanel>
         }
-        return <ExpansionPanelSummary>
-            <Typography>{name}</Typography>
-        </ExpansionPanelSummary>
+        return <ExpansionPanel expanded={false}>
+            <ExpansionPanelSummary>
+                <Typography>{name}</Typography>
+            </ExpansionPanelSummary>
+        </ExpansionPanel>
 
     }
     private handleChange = () => {
