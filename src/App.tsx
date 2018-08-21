@@ -22,8 +22,8 @@ const styles = (theme: Theme) => createStyles({
 })
 class App extends React.Component<WithStyles<typeof styles>, IState> {
   public state: IState = {
-    contractName: '',
-    scopeName: '',
+    contractName: 'eosio',
+    scopeName: 'eosio',
     submitted: false,
   }
   public render() {

@@ -4,9 +4,9 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import Typography from '@material-ui/core/Typography';
 import { abi_def, getAbiResult } from "eosjs-api";
 import * as React from "react"
-import eos from "../../eosService"
-import RicardianText from '../RicardianText';
-import ContractTable from "../Table";
+import eos from "../eosService"
+import ContractTable from "./ContractTable";
+import RicardianText from './RicardianText';
 
 interface IProps {
     contractName: string,
@@ -58,18 +58,16 @@ export default class ContractInfo extends React.Component<IProps, IState> {
                     {this.props.contractName}
                 </Typography>
                 <Typography variant='subheading'>Tables:</Typography>
-                <ul>
-                    {tables && tables.map(
-                        table =>
-                            <ContractTable
-                                scopeName={this.props.scopeName}
-                                key={table.name}
-                                contractName={this.props.contractName}
-                                table={table}
-                                structs={structsMap}
-                            />
-                    )}
-                </ul>
+                {tables && tables.map(
+                    table =>
+                        <ContractTable
+                            scopeName={this.props.scopeName}
+                            key={table.name}
+                            contractName={this.props.contractName}
+                            table={table}
+                            structs={structsMap}
+                        />
+                )}
                 <Typography variant='subheading'>Ricardian Clauses</Typography>
                 {
                     ricardian_clauses
@@ -83,7 +81,7 @@ export default class ContractInfo extends React.Component<IProps, IState> {
                     actions
                         .sort(({ ricardian_contract }) => ricardian_contract.length ? -1 : 1)
                         .map(({ name, ricardian_contract }) =>
-                            <RicardianText name={name} body={ricardian_contract} key={name}/>
+                            <RicardianText name={name} body={ricardian_contract} key={name} />
                         )
                 }
             </CardContent>
