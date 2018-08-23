@@ -8,6 +8,7 @@ import { createStyles, Theme, withStyles, WithStyles } from '@material-ui/core/s
 import TextField from '@material-ui/core/TextField';
 import ContractInfo from './components/ContractInfo';
 import Header from './components/Header';
+import { detectScatter } from './Scatter';
 
 interface IState {
   contractName: string,
@@ -26,6 +27,9 @@ class App extends React.Component<WithStyles<typeof styles>, IState> {
     contractName: 'eosio',
     scopeName: 'eosio',
     submitted: false,
+  }
+  public componentDidMount() {
+    detectScatter()
   }
   public render() {
     const { contractName, submitted, scopeName } = this.state

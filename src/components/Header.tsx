@@ -1,5 +1,4 @@
 import AppBar from '@material-ui/core/AppBar';
-import Button from '@material-ui/core/Button';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import * as React from 'react'
@@ -7,8 +6,8 @@ import { connect } from 'react-redux'
 import { Dispatch } from 'redux';
 import { IState } from '../state/reducers';
 import { setNode } from '../state/reducers/Network';
+import ScatterLogin from './ScatterLogin';
 import ButtonSelect from './ui/ButtonSelect';
-import ScatterLogo from './ui/ScatterLogo';
 
 
 class Header extends React.Component<IState['network'] & { setNode(node: string): void }> {
@@ -20,7 +19,7 @@ class Header extends React.Component<IState['network'] & { setNode(node: string)
                         Eos Contract Explorer
                     </Typography>
                     <ButtonSelect value={this.props.node} options={this.props.availebleNodes} onChange={this.props.setNode}/>
-                    <Button color="inherit">Link <ScatterLogo style={{ marginLeft: 5 }} /></Button>
+                    <ScatterLogin />
                 </Toolbar>
             </AppBar>
         )
