@@ -1,6 +1,7 @@
 import { createStyles, withStyles, WithStyles } from '@material-ui/core/styles';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import * as React from 'react';
+import ContractInfo from './components/ContractInfo';
 import ContractInput from './components/ContractInput';
 import Header from './components/Header';
 import { detectScatter } from './Scatter';
@@ -22,6 +23,7 @@ class App extends React.Component<WithStyles<typeof styles>> {
         <div className={this.props.classes.content}>
           <ContractInput />
         </div>
+        <ContractInfo />
       </MuiThemeProvider>
     )
   }

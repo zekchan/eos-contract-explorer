@@ -1,75 +1,54 @@
-/*
 import AppBar from '@material-ui/core/AppBar';
-// import Card from '@material-ui/core/Card';
-// import CardContent from '@material-ui/core/CardContent';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
-import * as React from "react"
-import ContractTable from "./ContractTable";
-import RicardianText from './RicardianText';
+import * as React from 'react';
+import { connect } from 'react-redux';
+import { IState } from '../state/reducers';
+import Actions from './tabs/Actions';
+import RicardianClauses from './tabs/RicardianClauses';
 
 interface IProps {
-    contractName: string,
-    scopeName: string,
-}
-interface IState {
     loading: boolean,
-    abi: abi_def | null,
-    error: string | null,
-    tab: 0 | 1 | 2,
+    contractName: string,
 }
-export default class ContractInfo extends React.Component<IProps, IState> {
-    public state: IState = {
-        loading: true,
-        abi: null,
-        error: null,
-        tab: 0
+type Tabs = 'clauses' | 'actions'
+const componentByTab = {
+    clauses: RicardianClauses,
+    actions: Actions,
+}
+class ContractInfo extends React.Component<IProps, { tab: Tabs }> {
+    public state = {
+        tab: 'clauses' as Tabs,
     }
 
     public render() {
-        if (this.state.loading) {
+        if (!this.props.contractName) {
+            return null
+        }
+        if (this.props.loading) {
             return <LinearProgress />
         }
-        const { ricardian_clauses, tables, actions, structs } = this.state.abi as abi_def
-        const structsMap = structs.reduce((acc, struct) => Object.assign(acc, { [struct.name]: struct }), {})
+
         return <React.Fragment>
             <AppBar position="static" color="secondary">
                 <Tabs value={this.state.tab} onChange={this.handleTab}>
-                    <Tab label="Tables" />
-                    <Tab label="Ricardian Clauses" />
-                    <Tab label="Actions" />
+                    {/*<Tab label="Tables" />*/}
+                    <Tab label="Ricardian Clauses" value='clauses' />
+                    <Tab label="Actions" value='actions' />
                 </Tabs>
             </AppBar>
-            {this.state.tab === 0 && tables && tables.map(
-                table =>
-                    <ContractTable
-                        scopeName={this.props.scopeName}
-                        key={table.name}
-                        contractName={this.props.contractName}
-                        table={table}
-                        structs={structsMap}
-                    />
-            )}
-            {
-                this.state.tab === 1 && ricardian_clauses
-                    .sort(({ body }) => body.length ? -1 : 1)
-                    .map(({ id, body }) =>
-                        <RicardianText name={id} body={body} key={id} />
-                    )
-            }
-            {
-                this.state.tab === 2 && actions
-                    .sort(({ ricardian_contract }) => ricardian_contract.length ? -1 : 1)
-                    .map(({ name, ricardian_contract }) =>
-                        <RicardianText name={name} body={ricardian_contract} key={name} />
-                    )
-            }
+            {React.createElement(componentByTab[this.state.tab])}
         </React.Fragment>
     }
-    private handleTab = (e: React.MouseEvent, tab: 0 | 1 | 2) => {
+    private handleTab = (e: React.MouseEvent, tab: Tabs) => {
         this.setState({ tab })
     }
 }
 
-*/
+const mapStateToProps = (state: IState) => ({
+    loading: state.contract.loading,
+    contractName: state.contract.account,
+})
+
+export default connect(mapStateToProps)(ContractInfo)
