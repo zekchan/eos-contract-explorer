@@ -1,4 +1,4 @@
-/*import Button from '@material-ui/core/Button';
+import Button from '@material-ui/core/Button';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
@@ -60,7 +60,7 @@ export default class ContractTable extends React.Component<IProps, IState> {
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
                 <div>
-                    <div  style={{ overflowX: 'scroll' }}>
+                    <div style={{ overflowX: 'scroll' }}>
                         <Table
                             loading={loading}
                             rows={pages[page]}
@@ -90,11 +90,11 @@ export default class ContractTable extends React.Component<IProps, IState> {
         }
         const prevPage = this.state.pages[page - 1]
         // @ts-ignore
-        const lastKeyOnPrevPage = prevPage[prevPage.length - 1] 
+        const lastKeyOnPrevPage = prevPage[prevPage.length - 1]
         return lastKeyOnPrevPage[this.state.indexField]
     }
     private loadPage(page: number): Promise<void> {
-        return eos.getTableRows(
+        return eos(this.context.store.getState()).getTableRows(
             true,
             this.props.contractName,
             this.props.scopeName,
@@ -149,4 +149,3 @@ export default class ContractTable extends React.Component<IProps, IState> {
         this.setPage(this.state.page - 1)
     }
 }
-*/

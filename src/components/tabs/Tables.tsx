@@ -1,5 +1,5 @@
 /*import LinearProgress from '@material-ui/core/LinearProgress';
-import * as React from "react"
+
 import ContractTable from "../ContractTable";
 import { abi_def } from 'eosjs-api';
 
@@ -24,3 +24,67 @@ export default class ContractInfo extends React.Component<IProps, IState> {
     }
 }
 */
+import Button from '@material-ui/core/Button'
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
+import TextField from '@material-ui/core/TextField'
+import * as React from "react"
+import { connect } from 'react-redux';
+import { IState } from '../../state/reducers';
+
+interface ICState {
+    scope: string;
+}
+interface IStateToProps {
+    account: string | null;
+    contract: string;
+}
+interface IDispatchToProps {
+    setScope(scope: string): void;
+}
+class Tables extends React.Component<IStateToProps & IDispatchToProps, ICState> {
+    public state = {
+        scope: this.props.contract,
+    }
+    public render() {
+        return <React.Fragment>
+            <Card>
+                <CardContent>
+                    <TextField
+                        placeholder='eosio'
+                        label='Scope'
+                        value={this.state.scope}
+                        onChange={this.handleScopeChange}
+                    />
+                    <Button onClick={this.handleContractNameClick}>{this.props.contract}</Button>
+                    {this.props.account && <Button onClick={this.handleAccountNameClick}>{this.props.account}</Button>}
+                    <br/>
+                </CardContent>
+            </Card>
+        </React.Fragment>
+    }
+
+    private handleScopeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        this.setScope(e.target.value)
+    }
+    private setScope = (scope: string) => {
+        this.setState({
+            scope,
+        })
+    }
+    private handleContractNameClick = () => {
+        this.setScope(this.props.contract)
+    }
+    private handleAccountNameClick = () => {
+        if (this.props.account) {
+            this.setScope(this.props.account)
+        }
+    }
+}
+const mapStateToProps = (state: IState): IStateToProps => ({
+    contract: state.contract.account,
+    account: state.account.account && state.account.account.accounts[0].name,
+})
+
+
+export default connect(mapStateToProps)(Tables)

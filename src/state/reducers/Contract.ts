@@ -17,16 +17,17 @@ const initialState: IContactsState = {
 }
 
 export const setContractAccount = createAction<string>('Set Contract account')
+export const setContractScope = createAction<string>('Set Contract scope')
 export const contractLoading = createAction('Contract loading')
 export const contractLoaded = createAction<abi_def>('Contract loaded')
 export const resetAccountData = createAction('reset Account data')
 export const loadContract = (contractName: string) => (dispatch: Dispatch, getState: () => IState) => {
     dispatch(batch(setContractAccount(contractName), contractLoading()))
     return eosService(getState())
-    .getAbi(contractName)
-    .then(({ abi }) => {
-        dispatch(contractLoaded(abi))
-    })
+        .getAbi(contractName)
+        .then(({ abi }) => {
+            dispatch(contractLoaded(abi))
+        })
 }
 export default createReducer<IContactsState>({}, initialState)
     .on(setContractAccount, (state, account) => ({
@@ -42,4 +43,8 @@ export default createReducer<IContactsState>({}, initialState)
         ...state,
         abi,
         loading: false,
+    }))
+    .on(setContractScope, (state, scope: string) => ({
+        ...state,
+        scope,
     }))

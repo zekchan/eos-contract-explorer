@@ -21,7 +21,6 @@ const styles = (theme: Theme) => createStyles({
 })
 class ContractInput extends React.Component<WithStyles<typeof styles> & IDispatchToProps> {
     private contractAccountRef = React.createRef<HTMLInputElement>()
-    private scopeAccountRef = React.createRef<HTMLInputElement>()
     public render() {
         const { classes: { textField, form } } = this.props
         return (
@@ -39,14 +38,6 @@ class ContractInput extends React.Component<WithStyles<typeof styles> & IDispatc
                     defaultValue="eosio"
                     margin="normal"
                     inputRef={this.contractAccountRef}
-                />
-                <TextField
-                    label="Аккаунт"
-                    placeholder="saynananapls"
-                    defaultValue="eosio"
-                    className={textField}
-                    inputRef={this.scopeAccountRef}
-                    margin="normal"
                 />
                 <Button variant="contained" color="primary" type='submit' size="large">
                     GO
