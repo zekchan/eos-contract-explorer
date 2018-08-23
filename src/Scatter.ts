@@ -1,4 +1,4 @@
-import { setScatterAvailable } from './state/reducers/Account';
+import { setIdentity, setScatterAvailable } from './state/reducers/Account';
 import store from './state/Store'
 
 interface INetwork {
@@ -8,12 +8,12 @@ interface INetwork {
 interface IRequirableFields {
     accounts: INetwork[]
 }
-interface IEOSAccount {
+export interface IEOSAccount {
     authority: 'active' | 'owner',
     blockchain: 'eos',
     name: string,
 }
-interface IIdentity {
+export interface IIdentity {
     publicKey: string,
     name: string,
     kyc: boolean,
@@ -21,7 +21,9 @@ interface IIdentity {
     accounts: IEOSAccount[]
 }
 export interface IScatter {
-    getIdentity(fields: IRequirableFields): Promise<IIdentity>
+    identity?: IIdentity;
+    getIdentity(fields: IRequirableFields): Promise<IIdentity>;
+    forgetIdentity(): void;
 }
 declare global {
     // tslint:disable-next-line:interface-name
@@ -31,6 +33,10 @@ let scatter: IScatter
 function setScatter(newScatter: IScatter) {
     store.dispatch(setScatterAvailable(true))
     scatter = newScatter
+    if (scatter.identity) {
+        store.dispatch(setIdentity(scatter.identity))
+    }
+    window.scatter = null
 }
 export function detectScatter() {
     if (window.scatter) {

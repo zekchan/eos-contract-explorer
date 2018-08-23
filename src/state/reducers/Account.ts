@@ -1,18 +1,20 @@
 import { createAction, createReducer } from 'redux-act';
+import { IIdentity } from '../../Scatter';
+type MayBeIdentity = IIdentity | null;
 export interface IAccountsState {
-    readonly account: string;
+    readonly account: MayBeIdentity;
     readonly scatterAvailable: boolean;
 }
 const initialState: IAccountsState = {
-    account: '',
+    account: null,
     scatterAvailable: false,
 }
 
-export const setAccountName = createAction<string>('Set Account name')
+export const setIdentity = createAction<MayBeIdentity>('Set Scatter Identity')
 export const setScatterAvailable = createAction<boolean>('Set Scatter Available')
 
 export default createReducer<IAccountsState>({}, initialState)
-    .on(setAccountName, (state, account) => ({
+    .on(setIdentity, (state, account: IIdentity) => ({
         ...state,
         account,
     }))
