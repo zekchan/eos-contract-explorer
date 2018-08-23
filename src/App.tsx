@@ -7,6 +7,7 @@ import Grid from '@material-ui/core/Grid';
 import { createStyles, Theme, withStyles, WithStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import ContractInfo from './components/ContractInfo';
+import Header from './components/Header';
 
 interface IState {
   contractName: string,
@@ -30,39 +31,42 @@ class App extends React.Component<WithStyles<typeof styles>, IState> {
     const { contractName, submitted, scopeName } = this.state
     const { classes: { textField } } = this.props
     return (
-      <Grid container={true} direction='column' justify='center' spacing={40}>
-        <Grid item={true} xs={12}>
-          <Card>
-            <CardContent>
-              <form onSubmit={this.handleFormSubmit} autoComplete='off' noValidate={true}>
-                <TextField
-                  label="Контракт"
-                  autoFocus={true}
-                  className={textField}
-                  placeholder="wizardstoken"
-                  value={contractName}
-                  onChange={this.handleContractNameChange}
-                  margin="normal"
-                />
-                <TextField
-                  label="Аккаунт"
-                  placeholder="saynananapls"
-                  className={textField}
-                  value={scopeName}
-                  onChange={this.handleScopeNameChange}
-                  margin="normal"
-                />
-                <Button variant="contained" color="primary" type='submit'>
-                  GO
+      <React.Fragment>
+        <Header />
+        <Grid container={true} direction='column' justify='center' spacing={40}>
+          <Grid item={true} xs={12}>
+            <Card>
+              <CardContent>
+                <form onSubmit={this.handleFormSubmit} autoComplete='off' noValidate={true}>
+                  <TextField
+                    label="Контракт"
+                    autoFocus={true}
+                    className={textField}
+                    placeholder="wizardstoken"
+                    value={contractName}
+                    onChange={this.handleContractNameChange}
+                    margin="normal"
+                  />
+                  <TextField
+                    label="Аккаунт"
+                    placeholder="saynananapls"
+                    className={textField}
+                    value={scopeName}
+                    onChange={this.handleScopeNameChange}
+                    margin="normal"
+                  />
+                  <Button variant="contained" color="primary" type='submit'>
+                    GO
             </Button>
-              </form>
-            </CardContent>
-          </Card>
+                </form>
+              </CardContent>
+            </Card>
+          </Grid>
+          <Grid item={true} xs={12}>
+            {submitted && <ContractInfo contractName={contractName} scopeName={this.state.scopeName} />}
+          </Grid>
         </Grid>
-        <Grid item={true} xs={12}>
-          {submitted && <ContractInfo contractName={contractName} scopeName={this.state.scopeName}/>}
-        </Grid>
-      </Grid>
+      </React.Fragment>
     )
   }
   private handleFormSubmit = (e: React.FormEvent) => {
