@@ -3,7 +3,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import * as React from 'react'
 import { connect } from 'react-redux'
-import { Dispatch } from 'redux';
+import { bindActionCreators, Dispatch } from 'redux';
 import { IState } from '../state/reducers';
 import { setNode } from '../state/reducers/Network';
 import ScatterLogin from './ScatterLogin';
@@ -26,7 +26,5 @@ class Header extends React.Component<IState['network'] & { setNode(node: string)
     }
 }
 const mapStateToProps = (state: IState) => state.network
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    setNode: (node: string) => dispatch(setNode(node))
-})
+const mapDispatchToProps = (dispatch: Dispatch) => bindActionCreators({ setNode }, dispatch)
 export default connect(mapStateToProps, mapDispatchToProps)(Header)

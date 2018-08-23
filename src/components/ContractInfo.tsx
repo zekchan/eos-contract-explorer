@@ -1,12 +1,11 @@
+/*
 import AppBar from '@material-ui/core/AppBar';
 // import Card from '@material-ui/core/Card';
 // import CardContent from '@material-ui/core/CardContent';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
-import { abi_def, getAbiResult } from "eosjs-api";
 import * as React from "react"
-import eos from "../eosService"
 import ContractTable from "./ContractTable";
 import RicardianText from './RicardianText';
 
@@ -28,18 +27,6 @@ export default class ContractInfo extends React.Component<IProps, IState> {
         tab: 0
     }
 
-    public componentDidMount() {
-        eos.getAbi(this.props.contractName)
-            .then(({ abi }: getAbiResult) => {
-                // tslint:disable-next-line:no-console
-                console.log(abi)
-                this.setState({
-                    loading: false,
-                    abi,
-                })
-            })
-    }
-
     public render() {
         if (this.state.loading) {
             return <LinearProgress />
@@ -47,7 +34,7 @@ export default class ContractInfo extends React.Component<IProps, IState> {
         const { ricardian_clauses, tables, actions, structs } = this.state.abi as abi_def
         const structsMap = structs.reduce((acc, struct) => Object.assign(acc, { [struct.name]: struct }), {})
         return <React.Fragment>
-            <AppBar position="static">
+            <AppBar position="static" color="secondary">
                 <Tabs value={this.state.tab} onChange={this.handleTab}>
                     <Tab label="Tables" />
                     <Tab label="Ricardian Clauses" />
@@ -84,3 +71,5 @@ export default class ContractInfo extends React.Component<IProps, IState> {
         this.setState({ tab })
     }
 }
+
+*/

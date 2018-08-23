@@ -1,16 +1,12 @@
 import * as React from 'react';
 
 import Button from '@material-ui/core/Button';
-import Grid from '@material-ui/core/Grid';
 import { createStyles, Theme, withStyles, WithStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
-import ContractInfo from './ContractInfo';
+import { connect } from 'react-redux';
+import { bindActionCreators, compose, Dispatch } from 'redux';
+import { loadContract } from '../state/reducers/Contract';
 
-interface IState {
-    contractName: string,
-    submitted: boolean,
-    scopeName: string,
-}
 const styles = (theme: Theme) => createStyles({
     textField: {
         marginLeft: theme.spacing.unit,
@@ -23,72 +19,59 @@ const styles = (theme: Theme) => createStyles({
         alignItems: 'baseline',
     }
 })
-class ContractInput extends React.Component<WithStyles<typeof styles>, IState> {
-    public state: IState = {
-        contractName: 'eosio',
-        scopeName: 'eosio',
-        submitted: false,
-    }
+class ContractInput extends React.Component<WithStyles<typeof styles> & IDispatchToProps> {
+    private contractAccountRef = React.createRef<HTMLInputElement>()
+    private scopeAccountRef = React.createRef<HTMLInputElement>()
     public render() {
-        const { contractName, submitted, scopeName } = this.state
         const { classes: { textField, form } } = this.props
         return (
-            <Grid container={true} direction='column' justify='center' spacing={40}>
-                <Grid item={true} xs={12}>
-                    <form
-                        onSubmit={this.handleFormSubmit}
-                        autoComplete='off'
-                        noValidate={true}
-                        className={form}
-                    >
-                        <TextField
-                            label="Контракт"
-                            autoFocus={true}
-                            className={textField}
-                            placeholder="wizardstoken"
-                            value={contractName}
-                            onChange={this.handleContractNameChange}
-                            margin="normal"
-                        />
-                        <TextField
-                            label="Аккаунт"
-                            placeholder="saynananapls"
-                            className={textField}
-                            value={scopeName}
-                            onChange={this.handleScopeNameChange}
-                            margin="normal"
-                        />
-                        <Button variant="contained" color="primary" type='submit' size="large">
-                            GO
+            <form
+                onSubmit={this.handleFormSubmit}
+                autoComplete='off'
+                noValidate={true}
+                className={form}
+            >
+                <TextField
+                    label="Контракт"
+                    autoFocus={true}
+                    className={textField}
+                    placeholder="wizardstoken"
+                    defaultValue="eosio"
+                    margin="normal"
+                    inputRef={this.contractAccountRef}
+                />
+                <TextField
+                    label="Аккаунт"
+                    placeholder="saynananapls"
+                    defaultValue="eosio"
+                    className={textField}
+                    inputRef={this.scopeAccountRef}
+                    margin="normal"
+                />
+                <Button variant="contained" color="primary" type='submit' size="large">
+                    GO
                         </Button>
-                    </form>
-                </Grid>
-                <Grid item={true} xs={12}>
-                    {submitted && <ContractInfo contractName={contractName} scopeName={this.state.scopeName} />}
-                </Grid>
-            </Grid>
+            </form>
         )
     }
     private handleFormSubmit = (e: React.FormEvent) => {
         e.preventDefault()
         e.stopPropagation()
-        this.setState({
-            submitted: true,
-        })
+        const { current } = this.contractAccountRef
+        if (current) {
+            this.props.loadContract(current.value)
+        }
+    }
 
-    }
-    private handleContractNameChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-        this.setState({
-            contractName: e.target.value,
-            submitted: false,
-        })
-    }
-    private handleScopeNameChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-        this.setState({
-            scopeName: e.target.value,
-            submitted: false,
-        })
-    }
 }
 
-export default withStyles(styles)(ContractInput)
+interface IDispatchToProps {
+    loadContract(contractName: string): void
+}
+
+const mapDispatchToProps = (dispatch: Dispatch): IDispatchToProps => bindActionCreators({ loadContract }, dispatch)
+
+export default compose(
+    withStyles(styles),
+    connect(undefined, mapDispatchToProps),
+)(ContractInput)
