@@ -28,7 +28,7 @@ class ContractTable extends React.Component<IMergedProps, ILocalState> {
                 <Typography>{this.props.tableName}</Typography>
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
-                <div>
+                <div style={{ overflowX: 'scroll' }}>
                     <div style={{ overflowX: 'scroll' }}>
                         <Table
                             loading={this.props.loading}
