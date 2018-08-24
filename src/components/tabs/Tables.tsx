@@ -1,29 +1,3 @@
-/*import LinearProgress from '@material-ui/core/LinearProgress';
-
-import ContractTable from "../ContractTable";
-import { abi_def } from 'eosjs-api';
-
-interface IProps {
-    tables: abi_def['tables']
-}
-
-export default class ContractInfo extends React.Component<IProps, IState> {
-    public render() {
-        const { ricardian_clauses, tables, actions, structs } = this.state.abi as abi_def
-        const structsMap = structs.reduce((acc, struct) => Object.assign(acc, { [struct.name]: struct }), {})
-        return tables.map(
-                table =>
-                    <ContractTable
-                        scopeName={this.props.scopeName}
-                        key={table.name}
-                        contractName={this.props.contractName}
-                        table={table}
-                        structs={structsMap}
-                    />
-            )}
-    }
-}
-*/
 import Button from '@material-ui/core/Button'
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
@@ -31,20 +5,22 @@ import TextField from '@material-ui/core/TextField'
 import { table_def } from 'eosjs-api';
 import * as React from "react"
 import { connect } from 'react-redux';
+import { bindActionCreators, Dispatch } from 'redux';
 import { IState } from '../../state/reducers';
-import { tablesSelector } from '../../state/reducers/Contract';
+import { setContractScope, tablesSelector } from '../../state/reducers/Contract';
 import ContractTable from '../ContractTable';
 
 interface ICState {
     scope: string;
 }
 interface IStateToProps {
+    scope: string | null;
     account: string | null;
     contract: string;
     tables: table_def[];
 }
 interface IDispatchToProps {
-    setScope(scope: string): void;
+    setContractScope(scope: string): void;
 }
 class Tables extends React.Component<IStateToProps & IDispatchToProps, ICState> {
     public state = {
@@ -62,10 +38,12 @@ class Tables extends React.Component<IStateToProps & IDispatchToProps, ICState> 
                     />
                     <Button onClick={this.handleContractNameClick}>{this.props.contract}</Button>
                     {this.props.account && <Button onClick={this.handleAccountNameClick}>{this.props.account}</Button>}
+                    <Button onClick={this.handleSetScopeClick} color="primary">Set Scope</Button>
                     <br />
-                    { this.props.tables.map(table => (
+
+                    {this.props.scope ? this.props.tables.map(table => (
                         <ContractTable key={table.name} tableName={table.name} />
-                    ))}
+                    )) : null}
                 </CardContent>
             </Card>
         </React.Fragment>
@@ -79,6 +57,9 @@ class Tables extends React.Component<IStateToProps & IDispatchToProps, ICState> 
             scope,
         })
     }
+    private handleSetScopeClick = () => {
+        this.props.setContractScope(this.state.scope)
+    }
     private handleContractNameClick = () => {
         this.setScope(this.props.contract)
     }
@@ -91,8 +72,9 @@ class Tables extends React.Component<IStateToProps & IDispatchToProps, ICState> 
 const mapStateToProps = (state: IState): IStateToProps => ({
     tables: tablesSelector(state),
     contract: state.contract.account,
+    scope: state.contract.scope,
     account: state.account.account && state.account.account.accounts[0].name,
 })
+const mapDispatchToProps = (dispatch: Dispatch): IDispatchToProps => bindActionCreators({ setContractScope }, dispatch)
 
-
-export default connect(mapStateToProps)(Tables)
+export default connect(mapStateToProps, mapDispatchToProps)(Tables)

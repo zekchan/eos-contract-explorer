@@ -61,18 +61,23 @@ export const structuresMapSelector = createSelector<IState, Tstruct[], IStructur
         ...acc,
         [struct.name]: struct,
     }), {}))
-interface ITablesFields {
+export interface ITablesFields {
     [tableName: string]: string[],
 }
 const emptyTables: table_def[] = []
-export const tablesSelector = (state: IState): table_def[] => state.contract.abi ? state.contract.abi.tables : emptyTables
-export const tablesFieldsSelector = createSelector(
-    structuresMapSelector,
-    tablesSelector,
+export const tablesSelector = (state: IState): table_def[] => {
+    return state.contract.abi ? state.contract.abi.tables : emptyTables
+}
+export const tablesFieldsSelector = createSelector<IState, IStructuresMap, table_def[], ITablesFields>(
+    [
+        structuresMapSelector,
+        tablesSelector,
+    ],
     (structures: IStructuresMap, tables: table_def[]): ITablesFields => (
         tables.reduce((acc, table) => ({
             ...acc,
-            [table.name]: structures[table.name].fields.map(({ name }) => name)
+            [table.name]: structures[table.type].fields.map(({ name }) => name)
+
         }), {})
     )
 )

@@ -3,12 +3,12 @@ import { Dispatch } from 'redux';
 import { createAction, createReducer } from 'redux-act';
 import { IState } from '.';
 import eosService from '../../eosService';
-import { contractLoaded } from './Contract';
+import { contractLoaded, setContractScope } from './Contract';
 
-interface IRow {
+export interface IRow {
     [fieldName: string]: string;
 }
-interface ITable {
+export interface ITable {
     readonly loading: boolean;
     readonly more: boolean;
     readonly key: string;
@@ -18,9 +18,9 @@ export interface ITablesState {
     readonly [tableName: string]: ITable
 }
 const initialState: ITablesState = {}
-const getLastKey = (table: ITable): string => {
-    if (!table.rows.length && !table.key) {
-        return ''
+const getLastKey = (table: ITable): string | void => {
+    if (!table.rows.length || !table.key) {
+        return
     }
 
     const lastRow = table.rows[table.rows.length - 1]
@@ -45,11 +45,26 @@ export const loadMoreRows = (limit: number, tableName: string) => (dispatch: Dis
     )
         .then((result) => {
             const more = result.more
-            const [, ...rows] = result.rows // drop first
+            let rows
+            if (table.rows.length) {
+                [, ...rows] = result.rows // drop first
+            } else {
+                rows = result.rows
+            }
+
             dispatch(loadedMoreRows({ tableName, more, rows }))
         })
 }
 export default createReducer<ITablesState>({}, initialState)
+    .on(setContractScope, (state) => Object.keys(state).reduce((acc, tableName) => ({
+        ...acc,
+        [tableName]: {
+            ...state[tableName],
+            loading: false,
+            more: true,
+            rows: [],
+        }
+    }), {}))
     .on(contractLoaded, (state, abi) => abi.tables.reduce((acc, table: table_def) => ({
         ...acc,
         [table.name]: {

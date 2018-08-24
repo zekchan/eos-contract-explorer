@@ -42,7 +42,7 @@ declare module 'eosjs-api' {
             scope: string,
             table: string,
             table_key: string,
-            lower_bound: string,
+            lower_bound: string | void,
             upper_bound: void,
             limit: number,
         ): Promise<getTableRowsResult>

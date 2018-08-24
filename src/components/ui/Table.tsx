@@ -28,21 +28,22 @@ const Table: React.StatelessComponent<IProps> = ({ indexField, fields, rows, loa
         </TableHead>
         <TableBody>
             {
-                loading ?
-                    <TableRow>
-                        <TableCell colSpan={fields.length}>
-                            <LinearProgress />
-                        </TableCell>
-                    </TableRow> :
-                    rows.map((row, idx) => (
-                        <TableRow key={indexField ? row[indexField] : idx}>
-                            {fields.map(field => (
-                                <TableCell key={field}>
-                                    <ButyData data={row[field]}/>
-                                </TableCell>
-                            ))}
-                        </TableRow>
-                    ))
+                rows.map((row, idx) => (
+                    <TableRow key={indexField ? row[indexField] : idx}>
+                        {fields.map(field => (
+                            <TableCell key={field}>
+                                <ButyData data={row[field]} />
+                            </TableCell>
+                        ))}
+                    </TableRow>
+                ))
+            }
+            {
+                loading && <TableRow>
+                    <TableCell colSpan={fields.length}>
+                        <LinearProgress />
+                    </TableCell>
+                </TableRow>
             }
         </TableBody>
     </Mtable>
