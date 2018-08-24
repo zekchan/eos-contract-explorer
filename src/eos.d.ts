@@ -1,10 +1,17 @@
 declare module 'eosjs-api' {
     type table_def = {
-        index_type: "i64",
-        key_names: string[],
-        key_types: string[],
+        readonly index_type: "i64",
+        readonly key_names: string[],
+        readonly key_types: string[],
+        readonly name: string,
+        readonly type: string
+    }
+    type Tstruct = {
         name: string,
-        type: string
+        fields: {
+            name: string,
+            type: string,
+        }[]
     }
     type abi_def = {
         version: string,
@@ -17,13 +24,7 @@ declare module 'eosjs-api' {
             name: string,
             ricardian_contract: string,
         }[],
-        structs: {
-            name: string,
-            fields: {
-                name: string,
-                type: string,
-            }[]
-        }[],
+        structs: Tstruct[],
     }
     type getAbiResult = {
         account_name: string,
@@ -42,7 +43,7 @@ declare module 'eosjs-api' {
             table: string,
             table_key: string,
             lower_bound: string,
-            upper_bound: string,
+            upper_bound: void,
             limit: number,
         ): Promise<getTableRowsResult>
     }

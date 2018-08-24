@@ -1,6 +1,7 @@
-import { abi_def } from 'eosjs-api';
+import { abi_def, table_def, Tstruct } from 'eosjs-api';
 import { Dispatch } from 'redux';
 import { batch, createAction, createReducer } from 'redux-act';
+import { createSelector } from 'reselect'
 import { IState } from '.';
 import eosService from '../../eosService';
 export interface IContactsState {
@@ -48,3 +49,30 @@ export default createReducer<IContactsState>({}, initialState)
         ...state,
         scope,
     }))
+
+const emptyArray: Tstruct[] = []
+export const structuresSelector = (state: IState): Tstruct[] => state.contract.abi ? state.contract.abi.structs : emptyArray
+export interface IStructuresMap {
+    [structureName: string]: Tstruct,
+}
+export const structuresMapSelector = createSelector<IState, Tstruct[], IStructuresMap>(
+    structuresSelector,
+    (structs: Tstruct[]) => structs.reduce((acc, struct) => ({
+        ...acc,
+        [struct.name]: struct,
+    }), {}))
+interface ITablesFields {
+    [tableName: string]: string[],
+}
+const emptyTables: table_def[] = []
+export const tablesSelector = (state: IState): table_def[] => state.contract.abi ? state.contract.abi.tables : emptyTables
+export const tablesFieldsSelector = createSelector(
+    structuresMapSelector,
+    tablesSelector,
+    (structures: IStructuresMap, tables: table_def[]): ITablesFields => (
+        tables.reduce((acc, table) => ({
+            ...acc,
+            [table.name]: structures[table.name].fields.map(({ name }) => name)
+        }), {})
+    )
+)

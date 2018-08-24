@@ -28,9 +28,12 @@ import Button from '@material-ui/core/Button'
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import TextField from '@material-ui/core/TextField'
+import { table_def } from 'eosjs-api';
 import * as React from "react"
 import { connect } from 'react-redux';
 import { IState } from '../../state/reducers';
+import { tablesSelector } from '../../state/reducers/Contract';
+import ContractTable from '../ContractTable';
 
 interface ICState {
     scope: string;
@@ -38,6 +41,7 @@ interface ICState {
 interface IStateToProps {
     account: string | null;
     contract: string;
+    tables: table_def[];
 }
 interface IDispatchToProps {
     setScope(scope: string): void;
@@ -58,7 +62,10 @@ class Tables extends React.Component<IStateToProps & IDispatchToProps, ICState> 
                     />
                     <Button onClick={this.handleContractNameClick}>{this.props.contract}</Button>
                     {this.props.account && <Button onClick={this.handleAccountNameClick}>{this.props.account}</Button>}
-                    <br/>
+                    <br />
+                    { this.props.tables.map(table => (
+                        <ContractTable key={table.name} tableName={table.name} />
+                    ))}
                 </CardContent>
             </Card>
         </React.Fragment>
@@ -82,6 +89,7 @@ class Tables extends React.Component<IStateToProps & IDispatchToProps, ICState> 
     }
 }
 const mapStateToProps = (state: IState): IStateToProps => ({
+    tables: tablesSelector(state),
     contract: state.contract.account,
     account: state.account.account && state.account.account.accounts[0].name,
 })
