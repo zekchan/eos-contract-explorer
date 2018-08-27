@@ -4,6 +4,7 @@ export interface INetworksState {
     readonly availebleNodes: string[];
 }
 const nodes = [
+    'http://localhost:8888',
     'https://api.franceos.fr:443',
     'https://api.eosn.io:443',
     'https://api.eosnewyork.io:443',
